@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - JwtAuthDemo</title>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" />
+    <style>
+        html, body {
+            font-family: Arial, sans-serif;
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(to bottom, #3674B5, #578FCA, #A1E3F9, #D1F8EF) !important;
+            color: white;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .navbar {
+            background-color: #a49b9b;
+            padding: 10px;
+        }
+
+            .navbar .nav-link {
+                color: #333;
+                margin-right: 15px;
+            }
+
+                .navbar .nav-link:hover {
+                    background-color: #444;
+                    color: white;
+                }
+
+        .content {
+            flex: 1;
+            padding: 20px;
+        }
+
+        .footer {
+            font-family: Arial, sans-serif;
+            width: 100%;
+            text-align: center;
+            padding: 10px 0;
+            background-color: #222;
+        }
+       
+        .employees-dropdown-menu {
+            max-height: 250px; 
+            overflow-y: auto; 
+            overflow-x: hidden;  
+            scrollbar-width: thin;  
+            scrollbar-color: #888 transparent; 
+        }
+
+        
+            .employees-dropdown-menu::-webkit-scrollbar {
+                width: 8px;
+            }
+
+            .employees-dropdown-menu::-webkit-scrollbar-track {
+                background: transparent;
+            }
+
+            .employees-dropdown-menu::-webkit-scrollbar-thumb {
+                background-color: #888;
+                border-radius: 4px;
+                border: 2px solid transparent;
+            }
+ 
+            .employees-dropdown-menu .dropdown-item {
+                white-space: nowrap;  
+                padding: 8px 20px;
+                font-size: 0.95rem;
+                color: #333;
+            }
+
+                .employees-dropdown-menu .dropdown-item:hover,
+                .employees-dropdown-menu .dropdown-item:focus {
+                    background-color: #578FCA;
+                    color: white;
+                    text-decoration: none;
+                }
+
+    </style>
+</head>
+
+<body>
+    @{
+        var currentController = ViewContext.RouteData.Values["controller"]?.ToString();
+        var currentAction = ViewContext.RouteData.Values["action"]?.ToString();
+        bool isAuthPage = currentController == "Account" && (currentAction == "Login" || currentAction == "Register");
+    }
+
+    @if (!isAuthPage)
+    {
+        <!-- Navigation Bar (Hidden only on Login/Register pages) -->
+        <nav class="navbar navbar-expand-lg">
+            <div class="container-fluid">
+                <a class="navbar-brand" href="#">JwtAuthDemo</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                        aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav">
+                        <li class="nav-item">
+                            <a class="nav-link" href="/"><i class="fas fa-home"></i> Home</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/Home/About"><i class="fas fa-info-circle"></i> About</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/Account/Profile"><i class="fas fa-user"></i> Profile</a>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="transactionDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="fas fa-exchange-alt"></i> Transaction
+                            </a>
+                            <ul class="dropdown-menu" aria-labelledby="transactionDropdown">
+                                <li><a class="dropdown-item" href="/Transaction/Transaction1"><i class="fas fa-money-bill-wave"></i> Transaction 1</a></li>
+                                <li><a class="dropdown-item" href="/Transaction/Transaction2"><i class="fas fa-credit-card"></i> Transaction 2</a></li>
+                                <li><a class="dropdown-item" href="/Transaction/Transaction3"><i class="fas fa-wallet"></i> Transaction 3</a></li>
+                            </ul>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="employeesDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="fas fa-users"></i> Employees
+                            </a>
+                            <ul class="dropdown-menu employees-dropdown-menu" aria-labelledby="employeesDropdown">
+                                <li><a class="dropdown-item" href="/Employee/Create"><i class="fas fa-id-users"></i>Employees</a></li>
+                                <li><a class="dropdown-item" href="/PersonalInformation/Create"><i class="fas fa-id-card"></i> Personal Info</a></li>
+                                <li><a class="dropdown-item" href="EducationalBackround/Create"><i class="fas fa-graduation-cap"></i> Educational Background</a></li>
+                                <li><a class="dropdown-item" href="/Employees/GovernmentInfo"><i class="fas fa-landmark"></i> Government Info</a></li>
+                                <li><a class="dropdown-item" href="/Employees/TrainingInfo"><i class="fas fa-chalkboard-teacher"></i> Training Info</a></li>
+                                <li><a class="dropdown-item" href="/Employees/WorkInfo"><i class="fas fa-briefcase"></i> Work Info</a></li>
+                                <li><a class="dropdown-item" href="/Employees/WorkExperience"><i class="fas fa-history"></i> Work Experience</a></li>
+                            </ul>
+                        </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link" href="/Home/Privacy"><i class="fas fa-user-secret"></i> Privacy</a>
+                        </li>
+                        <li class="nav-item">
+                            @if (!string.IsNullOrEmpty(Context.Session.GetString("Username")))
+                            {
+                                <text>
+                                    <form method="post" action="/Account/Logout" style="display:inline;">
+                                        <button type="submit" class="btn btn-link nav-link"><i class="fas fa-sign-out-alt"></i> Logout</button>
+                                    </form>
+                                </text>
+                            }
+                            else
+                            {
+                                <text>
+                                    <a href="/Account/Login" class="btn btn-link nav-link"><i class="fas fa-sign-in-alt"></i> Login</a>
+                                </text>
+                            }
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    }
+
+    <div class="content">
+        @RenderBody()
+    </div>
+
+    <footer class="footer">
+        &copy; @DateTime.Now.Year - JwtAuthDemo
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
